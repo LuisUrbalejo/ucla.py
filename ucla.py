@@ -22,6 +22,7 @@ class clsFTP():
             self.Servidor = strServidor
             self.strUsuario = strUsuario
             self.Password = strPassword
+            
             self.ftp =  FTP(strServidor,strUsuario,strPassword)
             self.DirRemoto = self.ftp.pwd()
             self.bolConectado = True
@@ -51,9 +52,15 @@ class clsFTP():
             print("Error " + str(e))
             try:
                 self.ftp.cwd(ruta + "/" + filename)
-                fp.close()
-                os.remove(filename)
-                os.mkdir(filename)
+                try:
+                    fp.close()
+                except:
+                    pass
+                try:
+                    os.remove(filename)
+                except:
+                    pass
+                os.makedirs(filename, exist_ok=True)
                 os.chdir(filename)
                 listaD = self.ftp.nlst()
                 for i in range(len(listaD)):
@@ -73,7 +80,7 @@ class clsFTP():
             print("Directorio Remoto:",self.DirRemoto)
             #print("\n")
             strOpcion = input("Opción (H ayuda): ")
-            if strOpcion.lower() == "q":
+            if strOpcion.lower().strip() == "q":
                 break
             self.evaluaOpcion(strOpcion)
     def evaluaOpcion(self, strOpcion):
